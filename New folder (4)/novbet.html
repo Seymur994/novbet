@@ -1,0 +1,177 @@
+ <!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      input[type=text], input[type=datetime-local], select {
+        width: 100%;
+        padding: 12px 20px;
+        margin: 8px 0;
+        display: inline-block;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+      }
+      input[type=submit] {
+        width: 100%;
+        background-color: #4CAF50;
+        color: white;
+        padding: 14px 20px;
+        margin: 8px 0;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      input[type=submit]:hover {
+        background-color: #45a049;
+      }
+      div {
+        border-radius: 5px;
+        background-color: #f2f2f2;
+        padding: 20px;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+      }
+      th, td {
+        text-align: left;
+        padding: 8px;
+      }
+      tr:nth-child(even) {
+        background-color: #f2f2f2;
+      }
+      button{
+        width: 98%;
+        height: 40px;
+        text-align: center;
+        padding-right:25px;
+        padding-left: 25px;
+        border: 0;
+        border-radius: 5px;
+        background-color: #4CAF50;
+        color: white;
+        margin: 0px 0px 15px 15px;
+
+      }
+      button:hover{
+        background-color: #09750c;
+        
+      }
+      
+           
+    </style>
+    <script>
+function addRow() {
+  var name = document.getElementById("name").value;
+  var datetime = document.getElementById("datetime").value;
+
+  if (name === "" || datetime === "") {
+    alert("Bilgiler hatalı!");
+    return;
+  }
+
+  // Check if the selected date and time is already taken
+  var table = document.getElementById("dutyTable");
+  for (var i = 1, row; row = table.rows[i]; i++) {
+    var existingDatetime = new Date(row.cells[1].innerHTML);
+    var selectedDatetime = new Date(datetime);
+
+    // Calculate the difference in minutes
+    var diffInMinutes = Math.abs((existingDatetime - selectedDatetime) / 60000);
+
+    if (diffInMinutes < 30) {
+      selectedDatetime.setMinutes(selectedDatetime.getMinutes() + 30);
+      datetime = selectedDatetime.toISOString().slice(0,16);
+    }
+  }
+
+  var row = table.insertRow(-1);
+  var cell1 = row.insertCell(0);
+  var cell2 = row.insertCell(1);
+
+  cell1.innerHTML = name;
+  cell2.innerHTML = datetime;
+
+  document.getElementById("name").value = "";
+  document.getElementById("datetime").value = "";
+
+  // Open a new tab and display the recorded information
+  var newTab = window.open();
+  newTab.document.write("<h1>Nöbetçi Personel</h1>");
+  newTab.document.write("<p>Ad: " + name + "</p>");
+  newTab.document.write("<p>Nöbet Tarihi ve Saati: " + datetime + "</p>");
+}
+
+
+
+
+
+function setDefaultDateTime() {
+    var now = new Date();
+    var datetimeLocal = now.toISOString().slice(0,16);
+    document.getElementById("datetime").value = datetimeLocal;
+}
+
+function checkName() {
+    var name = document.getElementById("name").value;
+    var submitButton = document.getElementById("submit");
+    if (name === "") {
+        submitButton.disabled = true;
+    } else {
+        submitButton.disabled = false;
+    }
+}
+
+
+    </script>
+  </head>
+  <body onload="setDefaultDateTime()">
+  
+    <h3>Nöbet Kaydı</h3>
+    
+    
+       
+ 
+    <div>
+      <form onsubmit="addRow(); return false;">
+        <label for="name">Ad</label>
+        <select id="name" name="name">
+          <option value="" disabled selected>İsim seçin</option>
+          <option value="Seymur Aghayev">Seymur Aghayev</option>
+          <option value="Eldar Aliyev">Eldar Aliyev</option>
+          <option value="Kamal Babayev">Kamal Babayev</option>
+          <option value="Cavid Axundov">Cavid Axundov</option>
+        </select>
+
+        <label for="datetime">Nöbet Tarihi ve Saati</label>
+        <input type="datetime-local" id="datetime" name="datetime">
+        
+        <input type="submit" value="Kaydet">
+      </form>
+    </div>
+    <button onclick="openAddNamePage()">Yeni İsim Ekle</button>
+
+<script>
+function openAddNamePage() {
+    window.open("add_name.html", "Add Name", "width=500,height=300");
+}
+
+function addNameToSelect(name) {
+    var select = document.getElementById("name");
+    var option = document.createElement("option");
+    option.text = name;
+    option.value = name;
+    select.add(option);
+}
+</script>
+
+    <h2>Nöbetçi Personel</h2>
+    <table id="dutyTable">
+      <tr>
+        <th>Ad</th>
+        <th>Nöbet Tarihi ve Saati</th>
+      </tr>
+    </table>
+    
+  </body>
+</html>
